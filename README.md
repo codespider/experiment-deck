@@ -17,3 +17,14 @@ docker compose up -d
 ```bash
 uv run main.py
 ```
+
+## Using Just (alternative)
+
+You can also use the Justfile for common commands:
+
+```bash
+just up    # Start services
+just down  # Stop services
+just run   # Run the app
+just       # List all commands
+```
