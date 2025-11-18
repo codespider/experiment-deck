@@ -1,0 +1,48 @@
+services:
+  redis:
+    image: redis/redis-stack:7.2.0-v11
+    container_name: experiment-deck-redis
+    ports:
+      - "6379:6379"      # Redis
+      - "8001:8001"      # RedisInsight
+    environment:
+      - REDIS_ARGS=--requirepass ${REDIS_PASSWORD:-redispassword}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-redispassword}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping | grep PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - experiment-deck-network
+
+  postgres:
+    image: postgres:17
+    container_name: experiment-deck-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgrespassword}
+      - POSTGRES_DB=${POSTGRES_DB:-experiment_deck}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - experiment-deck-network
+
+volumes:
+  redis_data:
+    driver: local
+  postgres_data:
+    driver: local
+
+networks:
+  experiment-deck-network:
+    driver: bridge
