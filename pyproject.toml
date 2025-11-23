@@ -6,5 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13.7"
 dependencies = [
     "dotenv>=0.9.9",
-    "redis>=7.0.1",
+    "httpx[http2]>=0.28.1",
+    "redis>=7.1.0",
+    "rich>=14.2.0",
 ]
